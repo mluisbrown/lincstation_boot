@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RGB Light Strip Control</title>
+    <style>
+        .container {
+            margin: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 200px;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>RGB Light Strip Control</h1>
+    <form id="controlForm">
+        <label for="mode">Mode:</label>
+        <select id="mode" name="mode">
+            <option value="off">Off</option>
+            <option value="normal">Normal</option>
+            <option value="breath">Breathing</option>
+            <option value="loop">Loop</option>
+        </select>
+
+        <label for="light">Brightness:</label>
+        <input type="number" id="light" name="light" min="1" max="255">
+
+        <label for="color0">Color 0:</label>
+        <input type="text" id="color0" name="color0">
+
+        <label for="color1">Color 1:</label>
+        <input type="text" id="color1" name="color1">
+
+        <button type="button" class="button" onclick="sendControlRequest()">Confirm</button>
+    </form>
+
+    <div id="resultContainer" style="display: none;">
+        <h2>Current Status</h2>
+        <p id="modeResult"></p>
+        <p id="lightResult"></p>
+        <p id="color0Result"></p>
+        <p id="color1Result"></p>
+    </div>
+</div>
+
+<script>
+    function sendControlRequest() {
+        var form = document.getElementById('controlForm');
+        var formData = new FormData(form);
+
+        fetch('/rgb/mode', {
+            method: 'POST',
+            body: formData
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request failed');
+                }
+            })
+            .then(function (data) {
+                console.log(data);
+                getCurrentRGBMode()
+            })
+            .catch(function (error) {
+                console.error(error);
+                alert('Request error');
+            });
+    }
+
+    function getCurrentRGBMode() {
+        fetch('/rgb/mode')
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request failed');
+                }
+            })
+            .then(function (data) {
+                console.log(data);
+                showResult(data);
+            })
+            .catch(function (error) {
+                console.error(error);
+                alert('Request error');
+            });
+    }
+
+    getCurrentRGBMode()
+
+    function showResult(data) {
+        var resultContainer = document.getElementById('resultContainer');
+        var modeResult = document.getElementById('modeResult');
+        var lightResult = document.getElementById('lightResult');
+        var color0Result = document.getElementById('color0Result');
+        var color1Result = document.getElementById('color1Result');
+
+        modeResult.textContent = 'Mode: ' + data.Mode;
+        lightResult.textContent = 'Brightness: ' + data.Light;
+        color0Result.textContent = 'Color 0: ' + data.Color0;
+        color1Result.textContent = 'Color 1: ' + data.Color1;
+
+        resultContainer.style.display = 'block';
+    }
+</script>
+</body>
+</html>

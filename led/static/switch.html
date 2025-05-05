@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Toggle LED Switch</title>
+</head>
+<body>
+<h1>Toggle LED Switch</h1>
+<label for="toggle">LED Switch:</label>
+<input type="checkbox" id="toggle">
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var toggleSwitch = document.getElementById('toggle');
+
+    // Listen for switch button change events
+    toggleSwitch.addEventListener('change', function() {
+      var enabled = toggleSwitch.checked;
+      const params = new URLSearchParams();
+      params.append('enabled', enabled);
+
+      // Send POST request to set switch state
+      fetch('/led/switch', {
+        method: 'POST',
+        body: params
+      })
+              .then(function(response) {
+                if (response.ok) {
+                  console.log(response);
+                  // Handle successful response
+                } else {
+                  throw new Error('Request failed');
+                }
+              })
+              .catch(function(error) {
+                console.error(error);
+                // Handle error response
+              });
+    });
+
+    // Initialize switch button state by sending GET request to get switch state
+    fetch('/led/switch')
+            .then(function(response) {
+              if (response.ok) {
+                return response.json();
+              } else {
+                throw new Error('Request failed');
+              }
+            })
+            .then(function(data) {
+              console.log(data);
+              // Handle successful response
+              toggleSwitch.checked = data.enabled;
+            })
+            .catch(function(error) {
+              console.error(error);
+              // Handle error response
+            });
+  });
+</script>
+</body>
+</html>

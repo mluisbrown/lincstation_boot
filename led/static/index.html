@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Navigation</title>
+  <style>
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .button {
+      padding: 12px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Navigation</h1>
+  <button class="button" onclick="redirectTo('/led')">LED Control Test</button>
+  <button class="button" onclick="redirectTo('/state')">Disk Status</button>
+  <button class="button" onclick="redirectTo('/switch')">LED Switch</button>
+  <button class="button" onclick="redirectTo('/rgb')">RGB Light Strip</button>
+</div>
+
+<script>
+  function redirectTo(path) {
+    window.location.href = path;
+  }
+</script>
+</body>
+</html>
